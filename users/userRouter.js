@@ -8,11 +8,11 @@ router.post('/', (req, res) => {});
 
 router.post('/:id/posts', (req, res) => {});
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   userDb
     .get()
     .then(users => res.status(200).json(users))
-    .catch(err => res.status(500).json({ message: err }));
+    .catch(next);
 });
 
 router.get('/:id', validateUserId, (req, res) => {
@@ -28,6 +28,7 @@ router.put('/:id', (req, res) => {});
 
 //custom middleware
 
+// Error handler
 router.use(({ statusCode, message }, req, res, next) => {
   if (statusCode) statusCode = 500;
   res.status(statusCode).json({ message });
@@ -36,7 +37,6 @@ router.use(({ statusCode, message }, req, res, next) => {
 
 function validateUserId(req, res, next) {
   const { id } = req.params;
-  console.log(id);
   userDb
     .getById(id)
     .then(user => {
