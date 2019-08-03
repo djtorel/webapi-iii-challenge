@@ -1,12 +1,12 @@
-const express = 'express';
+const express = require('express');
 
 const userDb = require('./userDb');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', (req, res) => {});
 
-});
+router.post('/:id/posts', (req, res) => {});
 
 router.get('/', (req, res) => {
   userDb
@@ -15,34 +15,43 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({ message: err }));
 });
 
-router.get('/:id', (req, res) => {
-
+router.get('/:id', validateUserId, (req, res) => {
+  console.log(req.user);
+  res.status(200).json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', (req, res) => {});
 
-});
+router.delete('/:id', (req, res) => {});
 
-router.delete('/:id', (req, res) => {
-
-});
-
-router.put('/:id', (req, res) => {
-
-});
+router.put('/:id', (req, res) => {});
 
 //custom middleware
 
+router.use(({ statusCode, message }, req, res, next) => {
+  if (statusCode) statusCode = 500;
+  res.status(statusCode).json({ message });
+  next();
+});
+
 function validateUserId(req, res, next) {
+  const { id } = req.params;
+  console.log(id);
+  userDb
+    .getById(id)
+    .then(user => {
+      if (user) {
+        req.user = user;
+        next();
+      } else {
+        next({ statusCode: 400, message: 'invalid user id' });
+      }
+    })
+    .catch(next);
+}
 
-};
+function validateUser(req, res, next) {}
 
-function validateUser(req, res, next) {
-
-};
-
-function validatePost(req, res, next) {
-
-};
+function validatePost(req, res, next) {}
 
 module.exports = router;
