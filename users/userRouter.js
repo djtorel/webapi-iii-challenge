@@ -23,7 +23,6 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', validateUserId, (req, res) => {
-  console.log(req.user);
   res.status(200).json(req.user);
 });
 
