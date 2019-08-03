@@ -4,7 +4,14 @@ const userDb = require('./userDb');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {});
+router.post('/', validateUser, (req, res, next) => {
+  userDb
+    .insert(req.body)
+    .then(user => {
+      res.status(201).json(user);
+    })
+    .catch(next);
+});
 
 router.post('/:id/posts', (req, res) => {});
 
@@ -48,13 +55,24 @@ function validateUserId(req, res, next) {
         req.user = user;
         next();
       } else {
-        next({ statusCode: 400, message: 'invalid user id' });
+        next(error(400, 'invalid user id'));
       }
     })
     .catch(next);
 }
 
-function validateUser(req, res, next) {}
+function validateUser(req, res, next) {
+  if (
+    Object.entries(req.body).length === 0 &&
+    req.body.constructor === Object
+  ) {
+    next(error(400, 'missing user data'));
+  }
+  const { name } = req.body;
+  name && name.length > 0
+    ? next()
+    : next(error(400, 'missing required name field'));
+}
 
 function validatePost(req, res, next) {}
 
