@@ -30,10 +30,14 @@ router.put('/:id', (req, res) => {});
 
 // Error handler
 router.use(({ statusCode, message }, req, res, next) => {
-  if (statusCode) statusCode = 500;
+  if (!statusCode) statusCode = 500;
+  if (!message) message = 'Unknown error';
   res.status(statusCode).json({ message });
   next();
 });
+
+// Error helper
+const error = (statusCode, message) => ({ statusCode, message });
 
 function validateUserId(req, res, next) {
   const { id } = req.params;
