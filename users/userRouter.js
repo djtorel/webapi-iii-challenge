@@ -26,7 +26,15 @@ router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {});
+router.get('/:id/posts', validateUserId, (req, res) => {
+  postDb
+    .get()
+    .then(posts =>
+      res
+        .status(200)
+        .json(posts.filter(post => post.user_id === Number(req.params.id)))
+    );
+});
 
 router.delete('/:id', validateUserId, (req, res, next) => {
   userDb
