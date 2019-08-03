@@ -29,7 +29,12 @@ router.get('/:id', validateUserId, (req, res) => {
 
 router.get('/:id/posts', (req, res) => {});
 
-router.delete('/:id', (req, res) => {});
+router.delete('/:id', validateUserId, (req, res, next) => {
+  userDb
+    .remove(req.params.id)
+    .then(() => res.status(200).json(req.user))
+    .catch(next);
+});
 
 router.put('/:id', (req, res) => {});
 
