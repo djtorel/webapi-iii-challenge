@@ -1,5 +1,7 @@
 const express = require('express');
 
+const userRoutes = require('./users/userRouter');
+
 const server = express();
 server.use(express.json());
 
@@ -19,6 +21,8 @@ const logger = (req, res, next) => {
   next();
 };
 server.use(logger);
+
+server.use('/users', userRoutes);
 
 const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`API running on port ${port}`));
