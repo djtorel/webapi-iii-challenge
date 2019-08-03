@@ -35,7 +35,12 @@ router.delete('/:id', validateUserId, (req, res, next) => {
     .catch(next);
 });
 
-router.put('/:id', (req, res) => {});
+router.put('/:id', [validateUserId, validateUser], (req, res, next) => {
+  userDb
+    .update(req.params.id, req.body)
+    .then(async () => res.status(200).json(await userDb.getById(req.params.id)))
+    .catch(next);
+});
 
 //custom middleware
 
